@@ -1,0 +1,9 @@
+C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer_Shared\bin\Debug\netstandard2.0\The_MTG_Metagamer_Shared.deps.json
+C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer_Shared\bin\Debug\netstandard2.0\The_MTG_Metagamer_Shared.dll
+C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer_Shared\bin\Debug\netstandard2.0\The_MTG_Metagamer_Shared.pdb
+C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\The_MTG_Metagamer_Shared.csprojAssemblyReference.cache
+C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\The_MTG_Metagamer_Shared.csproj.CoreCompileInputs.cache
+C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\The_MTG_Metagamer_Shared.AssemblyInfoInputs.cache
+C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\The_MTG_Metagamer_Shared.AssemblyInfo.cs
+C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\The_MTG_Metagamer_Shared.dll
+C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\The_MTG_Metagamer_Shared.pdb
