@@ -11,5 +11,6 @@ namespace The_MTG_Metagamer_Shared.Models
         public CardType CardType;
         public double CKD_Price;
         public double MCM_Price;
+        public double TIX_Price;
     }
 }

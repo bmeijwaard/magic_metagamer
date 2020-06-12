@@ -12,3 +12,16 @@ C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer\obj\Debu
 C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer\bin\Debug\netcoreapp2.1\The_MTG_Metagamer_Shared.dll
 C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer\bin\Debug\netcoreapp2.1\The_MTG_Metagamer_Shared.pdb
 C:\Users\Bob Meijwaard\source\repos\The_MTG_Metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.csproj.CopyComplete
+C:\Projects\magic_metagamer\The_MTG_Metagamer\bin\Debug\netcoreapp2.1\The_MTG_Metagamer.deps.json
+C:\Projects\magic_metagamer\The_MTG_Metagamer\bin\Debug\netcoreapp2.1\The_MTG_Metagamer.runtimeconfig.json
+C:\Projects\magic_metagamer\The_MTG_Metagamer\bin\Debug\netcoreapp2.1\The_MTG_Metagamer.runtimeconfig.dev.json
+C:\Projects\magic_metagamer\The_MTG_Metagamer\bin\Debug\netcoreapp2.1\The_MTG_Metagamer.dll
+C:\Projects\magic_metagamer\The_MTG_Metagamer\bin\Debug\netcoreapp2.1\The_MTG_Metagamer.pdb
+C:\Projects\magic_metagamer\The_MTG_Metagamer\bin\Debug\netcoreapp2.1\The_MTG_Metagamer_Shared.dll
+C:\Projects\magic_metagamer\The_MTG_Metagamer\bin\Debug\netcoreapp2.1\The_MTG_Metagamer_Shared.pdb
+C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.csprojAssemblyReference.cache
+C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.AssemblyInfoInputs.cache
+C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.AssemblyInfo.cs
+C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.csproj.CopyComplete
+C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.dll
+C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.pdb

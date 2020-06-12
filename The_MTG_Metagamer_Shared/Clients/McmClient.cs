@@ -7,7 +7,6 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 using The_MTG_Metagamer_Shared.Clients.McmModels;
 
 namespace The_MTG_Metagamer_Shared.Clients
@@ -22,16 +21,13 @@ namespace The_MTG_Metagamer_Shared.Clients
         DELETE
     }
 
-    public static class Constants
+    public struct Constants
     {
         public const string McmBaseUrl = "https://api.cardmarket.com/ws/v2.0/output.json/";
-
         public const string Account = "account";
         public const string FindProductExact = "products/find";
         public const string FindProductById = "products";
     }
-
-
 
     /// <summary>
     /// Source: https://www.mkmapi.eu/ws/documentation/API:Auth_csharp
@@ -83,6 +79,11 @@ namespace The_MTG_Metagamer_Shared.Clients
 
             var response = await request.GetResponseAsync();
             string result = default;
+
+            var limit = response.Headers["X-Request-Limit-Max"] ?? "-1";
+            var count = response.Headers["X-Request-Limit-Count"] ?? "-1";
+            Console.WriteLine($"Currently {count} out of {limit} requests fired at MCM");
+
             using (var stream = response.GetResponseStream())
             {
                 var reader = new StreamReader(stream, Encoding.UTF8);
@@ -104,13 +105,13 @@ namespace The_MTG_Metagamer_Shared.Clients
     public class OAuthHeader
     {
         /// <summary>App Token</summary>
-        protected string appToken = "DNUdthHkSx2rfKof";
+        protected string appToken = Config.AppToken;
         /// <summary>App Secret</summary>
-        protected string appSecret = "hOxLfH6DDJqjVoNocgz5jg6hnzSZwkkK";
+        protected string appSecret = Config.AppSecret;
         /// <summary>Access Token (Class should also implement an AccessToken property to set the value)</summary>
-        protected string accessToken = "pRGOxB3hFRPNJO7G2E9r4caLKTq2HZkG";
+        protected string accessToken = Config.AccessToken;
         /// <summary>Access Token Secret (Class should also implement an AccessToken property to set the value)</summary>
-        protected string accessSecret = "hVTaWtkhNbBMqK6fERK5wH0pdEMx6Ro5";
+        protected string accessSecret = Config.AccessSecret;
         /// <summary>OAuth Signature Method</summary>
         protected string signatureMethod = "HMAC-SHA1";
         /// <summary>OAuth Version</summary>
@@ -198,7 +199,7 @@ namespace The_MTG_Metagamer_Shared.Clients
 
             /// Create the OAuth signature
             var signatureKey = Uri.EscapeDataString(appSecret) + "&" + Uri.EscapeDataString(accessSecret);
-            var hasher = HMACSHA1.Create("HMACSHA1");
+            var hasher = HMAC.Create("HMACSHA1");
             hasher.Key = Encoding.UTF8.GetBytes(signatureKey);
             var rawSignature = hasher.ComputeHash(Encoding.UTF8.GetBytes(basestring));
             var oAuthSignature = Convert.ToBase64String(rawSignature);

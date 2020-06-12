@@ -24,7 +24,7 @@ namespace The_MTG_Metagamer_Shared.Scrapers
                 .SelectNodes("//div[contains(@class,'archetype-tile-description-wrapper')]/div")
                 .Distinct()
                 .ToList();
-
+            
             foreach (var node in nodes)
             {
                 var anchor = node.SelectNodes(".//a")?.FirstOrDefault();
@@ -36,17 +36,24 @@ namespace The_MTG_Metagamer_Shared.Scrapers
             return decks;
         }
 
-        public static async Task<IEnumerable<Card>> GetCardsAsync(string deckUrl)
+        public static async Task<(IEnumerable<Card> Cards, string Metashare)> GetCardsAsync(string deckUrl)
         {
             var cards = new ConcurrentBag<Card>();
             var html = await new HtmlClient(deckUrl).MakeRequestAsync();
 
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
-            var rows = doc.DocumentNode
-                .SelectNodes("//table[contains(@class, 'deck-view-deck-table')]")
-                .Skip(2).FirstOrDefault()
+            var rows = doc.DocumentNode?
+                .SelectNodes("//table[contains(@class, 'deck-view-deck-table')]")?
+                .Skip(2)?.FirstOrDefault()?
                 .SelectNodes("tr");
+
+            if (rows == null) return (cards, string.Empty);
+
+            var metashare = doc.DocumentNode?
+                .Descendants("p")?
+                .FirstOrDefault(n => n.InnerText.Contains("Decks"))?
+                .InnerText;
 
             var cardType = CardType.Creatures;
             foreach (var row in rows)
@@ -93,7 +100,7 @@ namespace The_MTG_Metagamer_Shared.Scrapers
                 cards.Add(card);
             }
 
-            return cards;
+            return (cards, metashare);
         }
     }
 }

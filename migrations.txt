@@ -1,0 +1,3 @@
+cd C:\Projects\magic_metagamer\The_MTG_Metagamer_shared
+dotnet ef migrations add initial --startup-project ..\The_MTG_Metagamer
+dotnet ef database update --startup-project ..\The_MTG_Metagamer

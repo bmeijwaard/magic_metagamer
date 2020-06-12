@@ -11,7 +11,7 @@ namespace The_MTG_Metagamer_Shared.Builders
 {
     public static class ExcelBuilder
     {
-        public static void Build(IEnumerable<Deck> decks, List<Models.Single> singles, Format format)
+        public static void Build(IEnumerable<Deck> decks, IEnumerable<Models.Single> singles, Format format)
         {
             using (ExcelPackage excel = new ExcelPackage())
             {
@@ -22,7 +22,7 @@ namespace The_MTG_Metagamer_Shared.Builders
                 var decksListSheet = excel.Workbook.Worksheets.Add($"Decks list");
                 var singlesListSheet = excel.Workbook.Worksheets.Add($"Singles list");
 
-                var deck_headerCells = decksListSheet.Cells[1, 1, 1, 3];
+                var deck_headerCells = decksListSheet.Cells[1, 1, 1, 4];
                 var deck_headerFont = deck_headerCells.Style.Font;
                 deck_headerFont.SetFromFont(new Font("Calibri", 14, FontStyle.Bold));
                 var deck_headerFill = deck_headerCells.Style.Fill;
@@ -33,11 +33,12 @@ namespace The_MTG_Metagamer_Shared.Builders
                 deck_border.Bottom.Style = ExcelBorderStyle.Thin;
 
                 decksListSheet.Cells[1, 1].Value = "Decks scraped";
-                decksListSheet.Cells[1, 2].Value = "Cardkingdom price";
-                decksListSheet.Cells[1, 3].Value = "Magiccardmarket price";
+                decksListSheet.Cells[1, 2].Value = "Metashare";
+                decksListSheet.Cells[1, 3].Value = "Cardkingdom price";
+                decksListSheet.Cells[1, 4].Value = "Magiccardmarket price";
 
                 var count = 2;
-                foreach (var deck in decks.OrderBy(d => d.Name))
+                foreach (var deck in decks.Where(d => d.Cards.Count() > 0).OrderByDescending(d => d.Ranking).ThenBy(d => d.Name))
                 {
                     Console.WriteLine($"Write to excel: {deck.Name}");
                     var sheetName = $"{count}_{deck.Name}";
@@ -47,8 +48,9 @@ namespace The_MTG_Metagamer_Shared.Builders
                     decksListSheet.Cells[count, 1].Style.Font.Color.SetColor(Color.DarkBlue);
                     decksListSheet.Cells[count, 1].Style.Font.UnderLine = true;
 
-                    decksListSheet.Cells[count, 2].Value = deck.Cards.Select(c => c.CKD_Price * c.Copies).Sum();
-                    decksListSheet.Cells[count, 3].Value = deck.Cards.Select(c => c.MCM_Price * c.Copies).Sum();
+                    decksListSheet.Cells[count, 2].Value = deck.Metashare;
+                    decksListSheet.Cells[count, 3].Value = deck.Cards.Select(c => c.CKD_Price * c.Copies).Sum();
+                    decksListSheet.Cells[count, 4].Value = deck.Cards.Select(c => c.MCM_Price * c.Copies).Sum();
 
                     worksheet = excel.Workbook.Worksheets.Add(sheetName);
                     count++;
@@ -94,17 +96,13 @@ namespace The_MTG_Metagamer_Shared.Builders
                     worksheet.Cells.AutoFitColumns();
                 }
 
-                ExcelAddress range = new ExcelAddress(2, 2, count, 2);
-                var rule = decksListSheet.ConditionalFormatting.AddThreeColorScale(range);
-                rule.Priority = 1;
-                rule.LowValue.Color = Color.FromArgb(0xFF, 0x63, 0xBE, 0x7B);
-                rule.HighValue.Color = Color.FromArgb(0xFF, 0xF8, 0x69, 0x6B);
-                rule.MiddleValue.Color = Color.FromArgb(0xFF, 0xFF, 0xEB, 0x84);
+                AddThreeColorScale(new ExcelAddress(2, 3, count, 3), decksListSheet);
+                AddThreeColorScale(new ExcelAddress(2, 4, count, 4), decksListSheet);
 
                 decksListSheet.Cells.AutoFitColumns();
 
 
-                var single_headerCells = singlesListSheet.Cells[1, 1, 1, 3];
+                var single_headerCells = singlesListSheet.Cells[1, 1, 1, 4];
                 var single_headerFont = single_headerCells.Style.Font;
                 single_headerFont.SetFromFont(new Font("Calibri", 14, FontStyle.Bold));
                 var single_headerFill = single_headerCells.Style.Fill;
@@ -115,27 +113,38 @@ namespace The_MTG_Metagamer_Shared.Builders
                 single_border.Bottom.Style = ExcelBorderStyle.Thin;
 
                 singlesListSheet.Cells[1, 1].Value = "Single";
-                singlesListSheet.Cells[1, 2].Value = "Cardkingdom price";
-                singlesListSheet.Cells[1, 3].Value = "Magiccardmarket price";
+                singlesListSheet.Cells[1, 2].Value = "Total copies";
+                singlesListSheet.Cells[1, 3].Value = "Cardkingdom price";
+                singlesListSheet.Cells[1, 4].Value = "Magiccardmarket price";
 
                 var r = 2;
                 foreach(var single in singles)
                 {
                     singlesListSheet.Cells[r, 1].Value = single.Name;
-                    singlesListSheet.Cells[r, 2].Value = single.CKD_Price;
-                    singlesListSheet.Cells[r, 3].Value = single.MCM_Price;
+                    singlesListSheet.Cells[r, 2].Value = single.Copies;
+                    singlesListSheet.Cells[r, 3].Value = single.CKD_Price;
+                    singlesListSheet.Cells[r, 4].Value = single.MCM_Price;
 
                     r++;
                 }
                 singlesListSheet.Cells.AutoFitColumns();
 
-                excel.Workbook.Properties.Title = "MTG GoldFish Legacy Extract";
+                excel.Workbook.Properties.Title = "MTGGOLDFISH  Extract";
                 excel.Workbook.Properties.Author = "Bob Meijwaard";
                 excel.Workbook.Properties.Company = "Bob Meijwaard";
 
                 FileInfo excelFile = new FileInfo($@"C:\temp\mtggoldfish_{format}_{DateTime.Now.ToString("yyyyMMddHHmmss")}.xlsx");
                 excel.SaveAs(excelFile);
             }
+        }
+
+        private static void AddThreeColorScale(ExcelAddress address, ExcelWorksheet sheet)
+        {
+            var rule = sheet.ConditionalFormatting.AddThreeColorScale(address);
+            rule.Priority = 1;
+            rule.LowValue.Color = Color.FromArgb(0xFF, 0x63, 0xBE, 0x7B);
+            rule.HighValue.Color = Color.FromArgb(0xFF, 0xF8, 0x69, 0x6B);
+            rule.MiddleValue.Color = Color.FromArgb(0xFF, 0xFF, 0xEB, 0x84);
         }
     }
 }

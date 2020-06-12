@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using The_MTG_Metagamer_Shared.Clients;
+using The_MTG_Metagamer_Shared.Data.Entities;
 using The_MTG_Metagamer_Shared.Extensions;
 using The_MTG_Metagamer_Shared.Models;
 
@@ -10,17 +12,9 @@ namespace The_MTG_Metagamer_Shared.Services
 {
     public static class McmService
     {
-        public static async Task<List<Models.Single>> GetSinglePrizesAsync(List<Deck> decks)
-        {
-            var singles = decks
-                    .SelectMany(d => d.Cards)
-                    .Select(c => new Models.Single(c.Name, c.CKD_Price))
-                    .DistinctBy(s => s.Name)
-                    .OrderBy(s => s.Name)
-                    .ToList();
-
-            var skip = new[] { "Plains", "Island", "Forest", "Mountain", "Swamp", "Wastes" };
-            var replacements = new Dictionary<string, string>
+        private static int total = 0;
+        private static readonly string[] _skip = new[] { "Plains", "Island", "Forest", "Mountain", "Swamp", "Wastes" };
+        private static readonly Dictionary<string, string> _replacements = new Dictionary<string, string>
                 {
                     { "Search for Azcanta", "Search for Azcanta / Azcanta, the Sunken Ruin" },
                     { "Delver of Secrets", "Delver of Secrets / Insectile Aberration" },
@@ -32,39 +26,32 @@ namespace The_MTG_Metagamer_Shared.Services
                     { "Hanweir Garrison", "Hanweir Garrison / Hanweir, the Writhing Township" },
                     { "Garruk Relentless", "Garruk Relentless / Garruk, the Veil-Cursed" },
                     { "Kytheon, Hero of Akros", "Kytheon, Hero of Akros // Gideon, Battle-Forged" },
+                    { "Brazen Borrower", "Brazen Borrower // Petty Theft" },
+                    { "Bonecrusher Giant", "Bonecrusher Giant // Stomp" },
+                    { "Fae of Wishes", "Fae of Wishes // Granted" },
+                    { "Duskwatch Recruiter", "Duskwatch Recruiter / Krallenhorde Howler" },
+                    { "Merchant of the Vale", "Merchant of the Vale // Haggle" },
+                    { "Lurrus of the Dream Den", "Lurrus of the Dream-Den" },
                 };
 
-            var total = singles.Count();
+        private static readonly ProductService _productService;
+        static McmService()
+        {
+            _productService = new ProductService();
+        }
+
+        public static async Task<List<Models.Single>> GetSinglePrizesAsync(List<Deck> decks)
+        {
+            var singles = decks
+                 .GetSingles()
+                 .OrderByDescending(d => d.Copies)
+                 .ThenBy(d => d.Name)
+                 .ToList();
+
+            total = singles.Count();
             foreach (var single in singles)
             {
-                try
-                {
-                    if (skip.Contains(single.Name))
-                    {
-                        single.MCM_Price = 0.10d;
-                        continue;
-                    }
-
-                    var name = replacements.Keys.Contains(single.Name)
-                        ? replacements.FirstOrDefault(s => s.Key == single.Name).Value
-                        : single.Name;
-
-                    var products = (await McmClient.GetExactProductAsync(name))?.Product?.Where(p => p.Rarity != "Special" && p.ExpansionName != "International Edition" && p.ExpansionName != "Summer Magic" && p.ExpansionName != "Alpha" && p.ExpansionName != "Beta");
-                    double avgTrend = 0.00d;
-                    foreach (var p in products)
-                    {
-                        var product = await McmClient.GetProductByIdAsync(p.IdProduct);
-                        if (products == null) continue;
-                        avgTrend = avgTrend == 0.00d || product?.Product?.PriceGuide?.TREND < avgTrend ? product.Product.PriceGuide.TREND : avgTrend;
-                    }
-
-                    single.MCM_Price = avgTrend;
-                    Console.WriteLine($"Done, {total--} remaining, getting mcm price for: {single.Name}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"{single.Name}: {e.Message}, {e.GetInnerExeptionsStackTrace()}");
-                }
+                await ProcessSingleAsync(single);
             }
 
             foreach (var deck in decks)
@@ -76,6 +63,103 @@ namespace The_MTG_Metagamer_Shared.Services
             }
 
             return singles;
+        }
+
+        public static async Task GatherMCMProductsAsync(List<Deck> decks)
+        {
+            var singles = decks
+                 .GetSingles()
+                 .OrderByDescending(d => d.Copies)
+                 .ThenBy(d => d.Name)
+                 .ToList();
+
+            total = singles.Count();
+            var count = 0;
+            foreach (var single in singles)
+            {
+                try
+                {
+                    if (_skip.Contains(single.Name))
+                        continue;
+
+                    var products = await CheckSingleAsync(single);
+                    count = products.Count();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed: {single.Name}");
+                    Console.WriteLine($"{ex}");
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref total);
+                    Console.WriteLine($"Done, {total} remaining prices seen {count}, getting mcm price for: {single.Name}");
+                }
+            }
+        }
+
+        public static async Task<IEnumerable<ProductEntity>> CheckSingleAsync(Models.Single single)
+        {
+            var name = single.NormalizedName();
+
+            var entities = await _productService.GetAsync(p => p.Name.StartsWith(name));
+            if (!entities.Any() || entities.Min(p => p.LastUpdated?.Date < DateTime.Now.AddDays(-7).Date))
+            {
+                var products = await McmClient.GetExactProductAsync(name);
+                foreach (var p in products?.Product?.Where(p => p.Rarity != "Special"))
+                {
+                    var product = await McmClient.GetProductByIdAsync(p.IdProduct);
+                    if (product == null)
+                        continue;
+                    else if (entities.Select(e => e.ProductId).Contains(product.Product.IdProduct))
+                        await _productService.UpdateAsync(product.Product);
+                    else
+                        await _productService.CreateAsync(product.Product);
+                }
+
+                entities = await _productService.GetAsync(p => p.Name == name);
+            }
+
+            return entities;
+        }
+
+        public static async Task ProcessSingleAsync(Models.Single single)
+        {
+            try
+            {
+                if (_skip.Contains(single.Name))
+                    return;
+
+                double avgTrend = 0.00d;
+                try
+                {
+                    var products = await CheckSingleAsync(single);
+                    avgTrend = products?.Where(p => p.TREND > 0.00d)?.OrderBy(p => p.TREND)?.FirstOrDefault()?.TREND ?? 0.00d;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed: {single.Name}");
+                    Console.WriteLine($"{ex}");
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref total);
+                    Console.WriteLine($"Done, {total}, getting mcm price for: {single.Name}");
+                    single.MCM_Price = avgTrend;
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{single.Name}: {e.ToString()}");
+            }
+        }
+
+        private static string NormalizedName(this Models.Single single)
+        {
+            return _replacements.Keys.Contains(single.Name)
+                ? _replacements.FirstOrDefault(s => s.Key == single.Name).Value
+                : single.Name;
         }
     }
 }

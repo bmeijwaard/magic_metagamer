@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace The_MTG_Metagamer_Shared.Models
 {
@@ -14,6 +13,19 @@ namespace The_MTG_Metagamer_Shared.Models
         }
         public string Url;
         public string Name;
+        public string Metashare;
+        public int Ranking
+        {
+            get
+            {
+                var result = string.IsNullOrWhiteSpace(Metashare)
+                    ? "0"
+                    : Metashare?
+                        .Split(new string[] { " Decks " }, StringSplitOptions.None)?[0] ?? "0";
+
+                return int.Parse(result);
+            }
+        }
         public IEnumerable<Card> Cards;
     }
 }

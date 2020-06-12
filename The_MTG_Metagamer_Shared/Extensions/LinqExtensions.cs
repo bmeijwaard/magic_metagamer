@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using The_MTG_Metagamer_Shared.Models;
 
 namespace The_MTG_Metagamer_Shared.Extensions
 {
@@ -16,6 +17,16 @@ namespace The_MTG_Metagamer_Shared.Extensions
 
                 if (set.Add(selectedValue))
                     yield return item;
+            }
+        }
+
+        public static IEnumerable<Models.Single> GetSingles(this IEnumerable<Deck> decks)
+        {
+            foreach (var cardGroup in decks.SelectMany(d => d.Cards).GroupBy(c => c.Name))
+            {
+                var amountPlayed = cardGroup.Sum(c => c.Copies);
+                var ckdPrice = cardGroup.First().CKD_Price;
+                yield return new Models.Single(cardGroup.Key, ckdPrice, amountPlayed);
             }
         }
     }

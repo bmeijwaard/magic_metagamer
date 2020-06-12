@@ -1,11 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.168
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "The_MTG_Metagamer", "The_MTG_Metagamer\The_MTG_Metagamer.csproj", "{9C2E9EAD-FC59-4B7C-9B78-E72493B3E358}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The_MTG_Metagamer_Shared", "The_MTG_Metagamer_Shared\The_MTG_Metagamer_Shared.csproj", "{8F5F8BDA-86D0-4BB7-9501-CF92DDF0FBB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "The_MTG_Metagamer_Shared", "The_MTG_Metagamer_Shared\The_MTG_Metagamer_Shared.csproj", "{8F5F8BDA-86D0-4BB7-9501-CF92DDF0FBB1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resources", "resources", "{05A9C2A1-FE3A-40DE-86B0-6A7A0271F2AB}"
+	ProjectSection(SolutionItems) = preProject
+		migrations.txt = migrations.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

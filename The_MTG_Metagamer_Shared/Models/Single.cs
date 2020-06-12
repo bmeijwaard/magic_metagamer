@@ -10,13 +10,15 @@ namespace The_MTG_Metagamer_Shared.Models
         {
         }
 
-        public Single(string name, double CKD_price) : this()
+        public Single(string name, double CKD_price, int copies) : this()
         {
             Name = name;
             CKD_Price = CKD_price;
+            Copies = copies;
         }
 
         public string Name;
+        public int Copies;
         public double CKD_Price;
         public double MCM_Price;
     }
