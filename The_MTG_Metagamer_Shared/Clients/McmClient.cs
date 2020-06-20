@@ -34,6 +34,8 @@ namespace The_MTG_Metagamer_Shared.Clients
     /// </summary>
     public static class McmClient
     {
+
+        private static string _count;
         public static async Task<string> GetAccountAsync()
         {
             var urlPart = "account";
@@ -62,6 +64,8 @@ namespace The_MTG_Metagamer_Shared.Clients
 
         private static async Task<string> GetJsonResponseAsync(string urlPart, Method method, params KeyValuePair<string, string>[] queryParams)
         {
+            if (_count == "5000") throw new IndexOutOfRangeException("Your MCM credits are done.");
+
             var url = RequestUrl(urlPart);
             HttpWebRequest request;
             if (queryParams.Count() > 0)
@@ -82,6 +86,7 @@ namespace The_MTG_Metagamer_Shared.Clients
 
             var limit = response.Headers["X-Request-Limit-Max"] ?? "-1";
             var count = response.Headers["X-Request-Limit-Count"] ?? "-1";
+            _count = count;
             Console.WriteLine($"Currently {count} out of {limit} requests fired at MCM");
 
             using (var stream = response.GetResponseStream())

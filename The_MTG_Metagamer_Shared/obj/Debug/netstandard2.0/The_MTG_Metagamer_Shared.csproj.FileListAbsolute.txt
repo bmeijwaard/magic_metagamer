@@ -14,3 +14,5 @@ C:\Projects\magic_metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\Th
 C:\Projects\magic_metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\The_MTG_Metagamer_Shared.AssemblyInfo.cs
 C:\Projects\magic_metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\The_MTG_Metagamer_Shared.dll
 C:\Projects\magic_metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\The_MTG_Metagamer_Shared.pdb
+C:\Projects\magic_metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\The_MTG_Metagamer_Shared.csprojAssemblyReference.cache
+C:\Projects\magic_metagamer\The_MTG_Metagamer_Shared\obj\Debug\netstandard2.0\The_MTG_Metagamer_Shared.csproj.CoreCompileInputs.cache

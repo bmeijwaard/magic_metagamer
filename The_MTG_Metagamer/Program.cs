@@ -8,6 +8,7 @@ using The_MTG_Metagamer_Shared.Extensions;
 using The_MTG_Metagamer_Shared.Services;
 using Newtonsoft.Json;
 using Dasync.Collections;
+using The_MTG_Metagamer_Shared.Clients;
 
 namespace The_MTG_Metagamer
 {
@@ -19,10 +20,11 @@ namespace The_MTG_Metagamer
             try
             {
                 // test a single
-                ///var test = await McmClient.GetExactProductAsync("Jace, Vryn's Prodigy // Jace, Telepath Unbound");                
+                //var test = await McmClient.GetExactProductAsync("Future Sight");       
+                
                 //var single = new The_MTG_Metagamer_Shared.Models.Single
                 //{
-                //    Name = "Force of Will",
+                //    Name = "Future Sight",
                 //    //Name = "Thalia, Guardian of Thraben",
                 //    Copies = 4,
                 //    CKD_Price = 1.00
@@ -46,7 +48,8 @@ namespace The_MTG_Metagamer
 
                 foreach (var format in (Format[])Enum.GetValues(typeof(Format)))
                 {
-                    if (format != Format.legacy && format != Format.modern) continue;
+                    //if (format != Format.legacy && format != Format.modern) continue;
+                    if (format != Format.commander) continue;
 
 
                     var decks = (await Scraper.GetDecksAsync(format)).ToList();

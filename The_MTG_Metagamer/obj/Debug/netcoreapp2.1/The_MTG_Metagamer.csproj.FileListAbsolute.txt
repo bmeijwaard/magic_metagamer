@@ -25,3 +25,5 @@ C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Me
 C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.csproj.CopyComplete
 C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.dll
 C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.pdb
+C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.csproj.CoreCompileInputs.cache
+C:\Projects\magic_metagamer\The_MTG_Metagamer\obj\Debug\netcoreapp2.1\The_MTG_Metagamer.genruntimeconfig.cache

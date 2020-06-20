@@ -32,6 +32,17 @@ namespace The_MTG_Metagamer_Shared.Services
                     { "Duskwatch Recruiter", "Duskwatch Recruiter / Krallenhorde Howler" },
                     { "Merchant of the Vale", "Merchant of the Vale // Haggle" },
                     { "Lurrus of the Dream Den", "Lurrus of the Dream-Den" },
+                    { "Archangel Avacyn", "Archangel Avacyn / Avacyn, the Purifier" },
+                    { "Treasure Map", "Treasure Map / Treasure Cove" },
+                    { "Legion's Landing", "Legion's Landing / Adanto, the First Fort" },
+                    { "Curious Homunculus", "Curious Homunculus / Voracious Reader" },
+                    { "Growing Rites of Itlimoc", "Growing Rites of Itlimoc / Itlimoc, Cradle of the Sun" },
+                    { "Journey to Eternity", "Journey to Eternity // Atzal, Cave of Eternity" },
+                    { "Lone Rider", "Lone Rider / It That Rides as One" },
+                    { "Pious Evangel", "Pious Evangel / Wayward Disciple" },
+                    { "Primal Amulet", "Primal Amulet / Primal Wellspring" },
+                    { "Storm the Vault", "Storm the Vault // Vault of Catlacan" },
+                    { "Thaumatic Compass", "Thaumatic Compass / Spires of Orazca" },
                 };
 
         private static readonly ProductService _productService;
@@ -103,7 +114,7 @@ namespace The_MTG_Metagamer_Shared.Services
             var name = single.NormalizedName();
 
             var entities = await _productService.GetAsync(p => p.Name.StartsWith(name));
-            if (!entities.Any() || entities.Min(p => p.LastUpdated?.Date < DateTime.Now.AddDays(-7).Date))
+            if (!entities.Any() || entities.Min(p => p.LastUpdated?.Date < DateTime.Now.AddDays(-99).Date))
             {
                 var products = await McmClient.GetExactProductAsync(name);
                 foreach (var p in products?.Product?.Where(p => p.Rarity != "Special"))
